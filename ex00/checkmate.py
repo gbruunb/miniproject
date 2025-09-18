@@ -1,28 +1,34 @@
 def checkmate(board):
-    rows = board.split()
-    board = [list(row) for row in rows]
+    try:
+        rows = board.split()
+        board = [list(row) for row in rows]
 
-    length_board = count_board(board)
-    if length_board == 0:
-        print("Invalid board")
+        if len(find_char(board, "K")) > 1 or len(find_char(board, "K")) < 1:
+            print("K must have only one")
+            return
+        
+        length_board = count_board(board)
+        if length_board == 0:
+            print("Invalid board")
+            return
+        
+        movement = {
+            'P' : [[-1, -1, 1], [-1, 1, 1]],
+            'B' : [[-1, -1, length_board * 2], [1, 1, length_board * 2], [-1, 1, length_board * 2], [1, -1, length_board * 2]],
+            'R' : [[-1, 0, length_board * 2], [1, 0, length_board * 2], [0, -1, length_board * 2], [0, 1, length_board * 2]],
+            'Q' : [[-1, -1, length_board * 2], [1, 1, length_board * 2], [-1, 1, length_board * 2], [1, -1, length_board * 2], [-1, 0, length_board * 2], [1, 0, length_board * 2], [0, -1, length_board * 2], [0, 1, length_board * 2]],
+        }
+        for i in range(length_board):
+            for j in range(length_board):
+                if board[i][j] in movement.keys():
+                    mark_attacks(board, movement, board[i][j], [i, j])
+
+        if len(find_char(board, "X")) > 0:
+            print("Success")
+        else:
+            print("Fail")
+    except:
         return
-    
-    movement = {
-        'P' : [[-1, -1, 1], [-1, 1, 1]],
-        'B' : [[-1, -1, length_board * 2], [1, 1, length_board * 2], [-1, 1, length_board * 2], [1, -1, length_board * 2]],
-        'R' : [[-1, 0, length_board * 2], [1, 0, length_board * 2], [0, -1, length_board * 2], [0, 1, length_board * 2]],
-        'Q' : [[-1, -1, length_board * 2], [1, 1, length_board * 2], [-1, 1, length_board * 2], [1, -1, length_board * 2], [-1, 0, length_board * 2], [1, 0, length_board * 2], [0, -1, length_board * 2], [0, 1, length_board * 2]],
-    }
-    for i in range(length_board):
-        for j in range(length_board):
-            if board[i][j] in movement.keys():
-                mark_attacks(board, movement, board[i][j], [i, j])
-
-    # display(board)
-    if find_char(board, "X") is None:
-        print("Success")
-    else:
-        print("Fail")
 
 def count_board(board):
     if len(board) == 0:
@@ -37,7 +43,7 @@ def count_board(board):
     return len(board)
 
 def mark_attacks(board, movement, piece, pos):
-    directions = movement[piece] # เลือกทิศทางการเดินของตัวหมากนั้น
+    directions = movement[piece] 
     for direction in directions:
         for step in range(1, direction[2] + 1):
             new_x = pos[0] + direction[0] * step
@@ -53,13 +59,15 @@ def mark_attacks(board, movement, piece, pos):
                     break
             else:
                 break
-
+            
 def find_char(board, char):
+    index_founded = []
     for i in range(len(board)):
         for j in range(len(board[i])):
             if board[i][j] == char:
-                return [i, j]
-            
+                index_founded.append([i, j])
+    return index_founded
+
 def display(board):
     for row in board:
         for col in row:
