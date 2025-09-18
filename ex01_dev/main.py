@@ -17,6 +17,7 @@ def main():
             with open(file_path, "r") as file:
                 board = file.read().strip()
                 checkmate(board)
+                print()  # Print a newline between different boards
         except FileNotFoundError:
             print(f"File not found: {file_path}")
             continue
